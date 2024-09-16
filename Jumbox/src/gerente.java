@@ -1,38 +1,37 @@
+import javax.swing.JOptionPane;
 
-public class gerente {
+public class gerente extends usuario {
 
-	private String nombre;
-	private String usuario;
-	private String contrasena;
-	
-	public gerente(String nombre, String usuario, String contrasena) {
-		super();
-		this.nombre = nombre;
-		this.usuario = usuario;
-		this.contrasena = contrasena;
-	}
-	public String getNombre() {
-		return nombre;
-	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-	public String getUsuario() {
-		return usuario;
-	}
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
-	public String getContrasena() {
-		return contrasena;
-	}
-	public void setContrasena(String contrasena) {
-		this.contrasena = contrasena;
-	}
-	@Override
-	public String toString() {
-		return "gerente [nombre=" + nombre + ", usuario=" + usuario + ", contrasena=" + contrasena + "]";
+	private int numlegajo;
+	 
+
+	public gerente(String nombre, String usuario, String contrasena, String rol, int numlegajo) {
+		super(nombre, usuario, contrasena, rol);
+		this.numlegajo = numlegajo;
 	}
 	
+	@Override	
+		public void menu() {
+			String[] menuGerente= {"Abrir opciones"};
+			
+			gestorproducto gestor = new gestorproducto(null);
+			int opc;
+
+			do {
+				opc = JOptionPane.showOptionDialog(null, "Abrir opciones", "Menu Principal", 0, 0, null, menuGerente, menuGerente[0]);
+
+				switch (opc) {
+				case 0:
+
+					gestor.menuGerente();
+
+					break;
+								
+				}
+			} while (opc != -1);
+		
+
+	}
 	
-}
+	}
+
