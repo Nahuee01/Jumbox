@@ -4,87 +4,128 @@ import javax.swing.JOptionPane;
 
 public class gestorproducto {
 
-    private LinkedList<producto> productos;
+	LinkedList<producto> producto = singletonproducto.getInstance();
 
-    // Constructor que acepta una lista de productos
-    public gestorproducto(LinkedList<producto> productos) {
-        this.productos = productos;
-    }
+	public gestorproducto() {
+		super();
+		this.producto = singletonproducto.getInstance();
+	}
 
-    public LinkedList<producto> getProductos() {
-        return productos;
-    }
+	public LinkedList<producto> getProducto() {
+		return producto;
+	}
 
-    public void setProductos(LinkedList<producto> productos) {
-        this.productos = productos;
-    }
+	public void setProducto(LinkedList<producto> producto) {
+		this.producto = producto;
+	}
 
-    @Override
-    public String toString() {
-        return "gestorproducto [productos=" + productos + "]";
-    }
+	@Override
+	public String toString() {
+		return "gestorproducto [producto=" + producto + "]";
+	}
 
-    public void menuGerente() {
-        String[] menu = {"Ver Graficos", "Buscar Producto", "Eliminar Producto", "Modificar Producto", "Agregar Producto"};
-        
-        int opc;
+	public void menuGerente() {
+		String[] menu = { "Ver Graficos", "Buscar Producto", "Eliminar Producto", "Modificar Producto",
+				"Agregar Producto" };
 
-        do {
-            opc = JOptionPane.showOptionDialog(null, "Seleccione una opcion", "Menu Principal", 0, 0, null, menu, menu[0]);
+		int opc;
 
-            switch (opc) {
-            case 0:
-                // Implementar acción para ver gráficos
-                break;
-            case 1:
-                int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto"));
-                String resultado = buscarProducto(codigoProducto);
-                JOptionPane.showMessageDialog(null, resultado);
-                break;
-            case 2:
-                // Implementar acción para eliminar producto
-                break;
-            case 3:
-                // Implementar acción para modificar producto
-                break;
-            case 4:
-                // Implementar acción para agregar producto
-                break;
-            default:
-                break;
-            }
-        } while (opc != -1);
-    }
+		do {
+			opc = JOptionPane.showOptionDialog(null, "Seleccione una opcion", "Menu Principal", 0, 0, null, menu,
+					menu[0]);
 
-    public void menuEmpleado() {
-        String[] menu = {"Ver Graficos", "Buscar Producto"};
+			switch (opc) {
+			case 0:
+				// Implementar acción para ver gráficos
+				break;
+			case 1:
+				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto"));
+				String resultado = buscarProducto(codigoProducto);
+				JOptionPane.showMessageDialog(null, resultado);
+				break;
+			case 2:
+				int codigoProductoEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese codigo"));
+				int cantidadAEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese cantidad"));
+				String resultadoEliminacion = eliminarProducto(codigoProductoEliminar, cantidadAEliminar);
+				JOptionPane.showMessageDialog(null, resultadoEliminacion);
+				break;
+			case 3:
+				// Implementar acción para modificar producto
+				break;
+			case 4:
+				int codigoProductoAgregar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese codigo"));
+				int cantidadAAgregar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese cantidad"));
+				String resultadoAgregar = agregarProducto(codigoProductoAgregar, cantidadAAgregar);
+				JOptionPane.showMessageDialog(null, resultadoAgregar);
+				break;
+			default:
+				break;
+			}
+		} while (opc != -1);
+	}
 
-        int opc;
+	public void menuEmpleado() {
+		String[] menu = { "Ver Graficos", "Buscar Producto" };
 
-        do {
-            opc = JOptionPane.showOptionDialog(null, "Seleccione una opcion", "Menu Principal", 0, 0, null, menu, menu[0]);
+		int opc;
 
-            switch (opc) {
-            case 0:
-                // Implementar acción para ver gráficos
-                break;
-            case 1:
-                int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto"));
-                String resultado = buscarProducto(codigoProducto);
-                JOptionPane.showMessageDialog(null, resultado);
-                break;
-            default:
-                break;
-            }
-        } while (opc != -1);
-    }
+		do {
+			opc = JOptionPane.showOptionDialog(null, "Seleccione una opcion", "Menu Principal", 0, 0, null, menu,
+					menu[0]);
 
-    public String buscarProducto(int codigoProducto) {
-        for (producto prod : productos) {
-            if (prod.getCodigo() == codigoProducto) {
-                return "Producto encontrado: " + prod.getNombre();
-            }
-        }
-        return "Producto no encontrado.";
-    }
+			switch (opc) {
+			case 0:
+				// Implementar acción para ver gráficos
+				break;
+			case 1:
+				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto"));
+				String resultado = buscarProducto(codigoProducto);
+				JOptionPane.showMessageDialog(null, resultado);
+				break;
+			default:
+				break;
+			}
+		} while (opc != -1);
+	}
+
+	// -------- busqueda de productos----------//
+	public String buscarProducto(int codigoProducto) {
+		for (producto prod : producto) {
+			if (prod.getCodigo() == codigoProducto) {
+				return "Producto encontrado: " + prod.getNombre();
+			}
+		}
+		return "Producto no encontrado.";
+	}
+	// -------- eliminar cantidad de productos----------//
+	
+	public String eliminarProducto(int codigo, int cantidad) {
+		
+		for (producto prod : producto) {
+			if (prod.getCodigo() == codigo) {
+				if (prod.getCantidad()>= cantidad) {
+					prod.setCantidad(prod.getCantidad()-cantidad);
+					return "Se descontaron " + cantidad + " unidades del producto " + prod.getNombre() + " " + prod.getMarca() + ". Stock actual: " + prod.getCantidad();
+	            } else {
+	                return "No hay suficiente stock para descontar " + cantidad + " unidades.";
+	            }
+	        }
+	    }
+	    return "Producto con código " + codigo + " no encontrado.";
+	}
+	
+	// -------- agregar cantidad de productos----------//
+	
+		public String agregarProducto(int codigo, int cantidad) {
+			
+			for (producto prod : producto) {
+				if (prod.getCodigo() == codigo) {
+					prod.setCantidad(prod.getCantidad()+cantidad);
+					return "Se agregaron" + cantidad + " unidades al producto" + prod.getNombre() + " " + prod.getMarca() + ". Stock actual" + prod.getCantidad();
+		    }
+		    
+		}
+
+			return "Producto con código " + codigo + " no encontrado.";
 }
+		}

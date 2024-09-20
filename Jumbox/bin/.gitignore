@@ -5,3 +5,5 @@
 /producto.class
 /sucursal.class
 /usuario.class
+/singletonusuario.class
+/singletonproducto.class

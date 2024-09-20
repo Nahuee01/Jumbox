@@ -10,7 +10,7 @@ public class producto {
 	private Double peso;
 	private LocalDate vencimiento;
 	private int cantidad;
-	
+
 	public producto(String categoria, String nombre, String marca, Double precio, int codigo, Double peso,
 			LocalDate vencimiento, int cantidad) {
 		super();
@@ -94,9 +94,5 @@ public class producto {
 				+ ", codigo=" + codigo + ", peso=" + peso + ", vencimiento=" + vencimiento + ", cantidad=" + cantidad
 				+ "]";
 	}
-	
-	
-	
-	
-	
+
 }
