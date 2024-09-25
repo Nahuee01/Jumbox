@@ -1,11 +1,11 @@
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
-
-
 
 public class gestorproducto {
 
@@ -41,7 +41,7 @@ public class gestorproducto {
 
 			switch (opc) {
 			case 0:
-				// Implementar acción para ver gráficos
+				// ver gráficos
 				break;
 			case 1:
 				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto"));
@@ -50,15 +50,13 @@ public class gestorproducto {
 				break;
 			case 2:
 				int codigoProductoEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese codigo"));
-				int cantidadAEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese cantidad"));
-				String resultadoEliminacion = eliminarProducto(codigoProductoEliminar, cantidadAEliminar);
+
+				String resultadoEliminacion = eliminarProducto(codigoProductoEliminar);
 				JOptionPane.showMessageDialog(null, resultadoEliminacion);
 				break;
 			case 3:
-				int codigoModificar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el codigo"));
-				int precioNuevo = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nuevo precio"));
-				String resultadoModificado = modificarPrecio(codigoModificar, precioNuevo);
-				JOptionPane.showMessageDialog(null, resultadoModificado);
+				int codigoProductoModificar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese codigo"));
+				modificarProducto(codigoProductoModificar);
 				break;
 			case 4:
 				agregarProducto();
@@ -80,7 +78,7 @@ public class gestorproducto {
 
 			switch (opc) {
 			case 0:
-				// Implementar acción para ver gráficos
+				// ver gráficos
 				break;
 			case 1:
 				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto"));
@@ -95,82 +93,113 @@ public class gestorproducto {
 
 	// -------- Busqueda de productos----------//
 	public String buscarProducto(int codigoProducto) {
-		for (producto prod : producto) {
-			if (prod.getCodigo() == codigoProducto) {
-				return "Categoria: " + prod.getCategoria() + "\nMarca: " + prod.getMarca() + "\nProducto : "
-						+ prod.getNombre() + "\nPrecio: " + prod.getPrecio() + "\nCodigo: " + prod.getCodigo()
-						+ "\nPeso: " + prod.getPeso() + "\nVencimiento: " + prod.getVencimiento() + "\nStock Total : "
-						+ prod.getCantidad();
-			}
-		}
-		return "Producto no encontrado.";
+	    for (producto prod : producto) {
+	        if (prod.getCodigo() == codigoProducto) {
+	            
+	            String stockMensaje = (prod.getCantidad() < 20) ? " (STOCK BAJO)" : "";
+	            
+	            return "Categoria: " + prod.getCategoria() + "\nMarca: " + prod.getMarca() + "\nProducto : "
+	                    + prod.getNombre() + "\nPrecio: " + prod.getPrecio() + "\nCodigo: " + prod.getCodigo()
+	                    + "\nPeso: " + prod.getPeso() + "\nVencimiento: " + prod.getVencimiento() + "\nStock Total : "
+	                    + prod.getCantidad() + stockMensaje;
+	        }
+	    }
+	    return "Producto no encontrado.";
 	}
 	// -------- Eliminar cantidad de stock de los productos----------//
 
-	public String eliminarProducto(int codigo, int cantidad) {
+	public String eliminarProducto(int codigo) {
 
 		for (producto prod : producto) {
 			if (prod.getCodigo() == codigo) {
-				if (prod.getCantidad() >= cantidad) {
-					prod.setCantidad(prod.getCantidad() - cantidad);
-					return "Se descontaron " + cantidad + " unidades del producto " + prod.getNombre() + " "
-							+ prod.getMarca() + ". Stock actual: " + prod.getCantidad();
+				
+				int confirmacion = JOptionPane.showConfirmDialog(null,
+						"¿Está seguro que desea eliminar el producto " + prod.getNombre() + " " + prod.getMarca() + "?",
+						"Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+
+				if (confirmacion == JOptionPane.YES_OPTION) {
+					producto.remove(prod);
+					return "El producto " + prod.getNombre() + " " + prod.getMarca()
+							+ " ha sido eliminado exitosamente.";
 				} else {
-					return "No hay suficiente stock para descontar " + cantidad + " unidades.";
+
+					return "La eliminación del producto ha sido cancelada.";
 				}
 			}
 		}
+
 		return "Producto con código " + codigo + " no encontrado.";
 	}
 
-	// -------- Agregar cantidad de stock de los productos----------//
+	// -------- Agregar productos----------//
 
 	public String agregarProducto() {
 
-		 String categoria = JOptionPane.showInputDialog("Ingrese la categoría del producto:");
-	        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del producto:");
-	        String marca = JOptionPane.showInputDialog("Ingrese la marca del producto:");
-	        double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio del producto:"));
-	        int codigo = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto:"));
-	        double peso = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el peso del producto:"));
-	        int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad en stock del producto:"));
+		String[] categoria = { "Electrodomesticos", "Bebidas", "Lacteos", "Panaderia", "Perfumeria", "Pastas", };
+		String cat = (String) JOptionPane.showInputDialog(null, "Selecciones la categoria", "Categorias",
+				JOptionPane.PLAIN_MESSAGE, null, categoria, categoria[0]);
 
-	        LocalDate vencimiento = null;
-	        
+		String nombre = JOptionPane.showInputDialog("Ingrese el nombre del producto:");
+		String marca = JOptionPane.showInputDialog("Ingrese la marca del producto:");
+		double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio del producto:"));
+		int codigo = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto:"));
+		double peso = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el peso del producto en gramos:"));
+		int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad en stock del producto:"));
+		if (cantidad < 20) {
+			JOptionPane.showMessageDialog(null, "Advertencia Stock bajo.");
+		}
 
-	        boolean fechaValida = false;
-	        while (!fechaValida) {
-	            try {
-	                String fechaInput = JOptionPane.showInputDialog("Ingrese la fecha de vencimiento (dd/MM/yyyy):");
-	                
+		LocalDate vencimiento = null;
+		DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		boolean fechaValida = false;
 
-	                // Verificar si la fecha ingresada es menor que la fecha actual
-	                if (vencimiento.isBefore(LocalDate.now())) {
-	                    throw new Exception("La fecha de vencimiento no puede ser menor a la fecha actual.");
-	                }
-	                fechaValida = true; // Si no lanza ninguna excepción, la fecha es válida
-	            } catch (ParseException e) {
-	                JOptionPane.showMessageDialog(null, "Formato de fecha inválido. Intente nuevamente.");
-	            } catch (Exception e) {
-	                JOptionPane.showMessageDialog(null, e.getMessage());
-	            }
-	        }
+		while (!fechaValida) {
+			try {
+				String fechaInput = JOptionPane.showInputDialog("Ingrese la fecha de vencimiento (dd/MM/yyyy):");
+				vencimiento = LocalDate.parse(fechaInput, formato);
 
-	        // Crear el objeto producto con los datos ingresados
-	        producto nuevoProducto = new producto(categoria, nombre, marca, precio, codigo, peso, vencimiento, cantidad);
-	        producto.add(nuevoProducto);
+				if (vencimiento.isBefore(LocalDate.now())) {
+					throw new Exception("La fecha de vencimiento no puede ser menor a la fecha actual.");
+				}
+				fechaValida = true;
+			} catch (DateTimeParseException e) {
+				JOptionPane.showMessageDialog(null, "Formato de fecha inválido. Intente nuevamente.");
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e.getMessage());
+			}
+		}
 
-	        JOptionPane.showMessageDialog(null, "Producto agregado con éxito!");
-	        return "Producto agregado con éxito!";
-	    }
-	
+		producto nuevoProducto = new producto(categoria[0], nombre, marca, precio, codigo, peso, vencimiento, cantidad);
+		producto.add(nuevoProducto);
+
+		JOptionPane.showMessageDialog(null, "Producto agregado con éxito!");
+		return "Producto agregado con éxito";
+	}
 	// -------- Modificar precio de losproductos----------//
 
-	public String modificarPrecio(int codigo, double precio) {
+	public String modificarProducto(int codigo) {
 		for (producto prod : producto) {
 			if (prod.getCodigo() == codigo) {
-				prod.setPrecio(precio);
-				return "El nuevo precio es de: " + precio + " del producto " + prod.getNombre() + prod.getMarca();
+				String[] opciones = { "Modificar Precio", "Modificar Cantidad" };
+				int eleccion = JOptionPane.showOptionDialog(null, "¿Qué desea modificar?", "Modificar Producto",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, opciones[0]);
+
+				if (eleccion == 0) {
+					double nuevoPrecio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el nuevo precio:"));
+					prod.setPrecio(nuevoPrecio);
+
+					JOptionPane.showMessageDialog(null, "El nuevo precio es de: " + nuevoPrecio + " del producto "
+							+ prod.getNombre() + " " + prod.getMarca());
+				} else if (eleccion == 1) { // Opción 1 es "Modificar Cantidad"
+					int nuevaCantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la nueva cantidad:"));
+					prod.setCantidad(nuevaCantidad);
+					if (nuevaCantidad < 20) {
+						JOptionPane.showMessageDialog(null,
+								"Advertencia de Stock bajo " + "\nLa nueva cantidad en stock es de: " + nuevaCantidad
+										+ " del producto " + prod.getNombre() + " " + prod.getMarca());
+					}
+
+				}
 			}
 		}
 
