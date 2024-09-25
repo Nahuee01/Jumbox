@@ -48,7 +48,7 @@ public class usuario {
 
 	@Override
 	public String toString() {
-		return "usuario [nombre=" + nombre + ", mail=" + mail + ", contrasena=" + contrasena + ", rol=" + rol + "]";
+		return "Bienvenido " + nombre ;
 	}
 	
 

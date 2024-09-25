@@ -13,9 +13,7 @@ public class singletonusuario {
 	public static LinkedList<usuario> getInstance() {
 		if (usuarios == null) {
 			usuarios = new LinkedList<usuario>();
-		} else {
-			JOptionPane.showMessageDialog(null, "Usuario encontrado ");
-		}
+		} 
 		return usuarios;
 	}
 

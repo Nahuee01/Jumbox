@@ -13,9 +13,7 @@ public class singletonproducto {
 	public static LinkedList<producto> getInstance() {
 		if (productos == null) {
 			productos = new LinkedList<producto>();
-		} else {
-			JOptionPane.showMessageDialog(null, "Este producto ya existe: ");
-		}
+		} 
 		return productos;
 	}
 
