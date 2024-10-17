@@ -1,3 +1,4 @@
+import java.sql.Date;
 import java.time.LocalDate;
 
 public class producto {
@@ -8,11 +9,11 @@ public class producto {
 	private Double precio;
 	private int codigo;
 	private Double peso;
-	private LocalDate vencimiento;
+	private Date vencimiento;
 	private int cantidad;
 
 	public producto(String categoria, String nombre, String marca, Double precio, int codigo, Double peso,
-			LocalDate vencimiento, int cantidad) {
+			Date vencimiento, int cantidad) {
 		super();
 		this.categoria = categoria;
 		this.nombre = nombre;
@@ -72,11 +73,11 @@ public class producto {
 		this.peso = peso;
 	}
 
-	public LocalDate getVencimiento() {
+	public Date getVencimiento() {
 		return vencimiento;
 	}
 
-	public void setVencimiento(LocalDate vencimiento) {
+	public void setVencimiento(Date vencimiento) {
 		this.vencimiento = vencimiento;
 	}
 

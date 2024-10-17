@@ -48,9 +48,8 @@ public class usuario {
 
 	@Override
 	public String toString() {
-		return "Bienvenido " + nombre ;
+		return "Bienvenido " + nombre;
 	}
-	
 
 	public void menu() {
 

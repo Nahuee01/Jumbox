@@ -12,7 +12,7 @@ public class gerente extends usuario {
 	@Override
 	public void menu() {
 		gestorproducto gestor = new gestorproducto();
-		
+
 		gestor.menuGerente();
 	}
 }
