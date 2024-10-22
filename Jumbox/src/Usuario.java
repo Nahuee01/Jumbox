@@ -1,12 +1,12 @@
 
-public class usuario {
+public class Usuario {
 
 	private String nombre;
 	private String mail;
 	private String contrasena;
 	private String rol;
 
-	public usuario(String nombre, String mail, String contrasena, String rol) {
+	public Usuario(String nombre, String mail, String contrasena, String rol) {
 		super();
 		this.nombre = nombre;
 		this.mail = mail;

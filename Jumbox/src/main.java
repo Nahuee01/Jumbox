@@ -16,7 +16,7 @@ public class main {
 		String mail = JOptionPane.showInputDialog("Ingresa mail");
 		String contrasena = JOptionPane.showInputDialog("Ingresa contrasena");
 
-		usuario Login = Login(mail, contrasena);
+		Usuario Login = Login(mail, contrasena);
 		if (Login == null) {
 			JOptionPane.showMessageDialog(null, "No encontrado");
 		} else {
@@ -39,8 +39,8 @@ public class main {
 		}
 	}
 
-	public static usuario Login(String mail, String contrasena) {
-	    usuario usuario = null;
+	public static Usuario Login(String mail, String contrasena) {
+	    Usuario usuario = null;
 	    try {
 	        PreparedStatement statement = (PreparedStatement) con.prepareStatement("SELECT * FROM `usuario` WHERE `mail` = ? AND `contrasena` = ?");
 	        statement.setString(1, mail);
@@ -48,7 +48,7 @@ public class main {
 	        ResultSet resultSet = statement.executeQuery();
 	        if (resultSet.next()) {
 	        	   System.out.println("Rol recuperado: " + resultSet.getString("rol"));
-	            usuario = new usuario(resultSet.getString("nombre"), resultSet.getString("rol"), resultSet.getString("contrasena"), resultSet.getString("mail"));
+	            usuario = new Usuario(resultSet.getString("nombre"), resultSet.getString("mail"), resultSet.getString("contrasena"), resultSet.getString("rol"));
 	        }
 	    } catch (Exception e) {
 	        System.out.println("Error en la consulta: " + e.getMessage());

@@ -1,6 +1,6 @@
 import javax.swing.JOptionPane;
 
-public class empleado extends usuario {
+public class empleado extends Usuario {
 
 	private int numlegajo;
 

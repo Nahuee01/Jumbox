@@ -32,7 +32,7 @@ public class gestorproducto {
 				break;
 			case 1:
 				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto"));
-				String resultado = BuscarProducto(codigoProducto);
+				producto resultado = BuscarProducto(codigoProducto);
 				JOptionPane.showMessageDialog(null, resultado);
 				break;
 			case 2:
@@ -70,6 +70,7 @@ public class gestorproducto {
 					break;
 				case 1:
 					controllerUsuario.BuscarUsuario(opc);
+					break;
 				case 2:
 					controllerUsuario.EliminarUsuario(opc);
 					break;
@@ -98,7 +99,7 @@ public class gestorproducto {
 				break;
 			case 1:
 				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código del producto"));
-				String resultado = BuscarProducto(codigoProducto);
+				producto resultado = BuscarProducto(codigoProducto);
 				JOptionPane.showMessageDialog(null, resultado);
 				break;
 			default:
@@ -152,27 +153,25 @@ public class gestorproducto {
 	// -------- Agregar productos----------//
 
 	public static void AgregarProducto(producto producto) {
-		try {
-			
-			PreparedStatement statement = (PreparedStatement) 
-					con.prepareStatement("INSERT INTO `producto`(`categoria`,`nombre`, `marca`, `precio`,`codigo`,`peso`,`vencimiento`,`cantidad`) VALUES (?,?,?,?,?,?,?,?)");
-			statement.setString(1, producto.getCategoria());
-			statement.setString(2, producto.getNombre());
-			statement.setString(3, producto.getMarca());
-			statement.setDouble(4, producto.getPrecio());
-			statement.setInt(5, producto.getCodigo());
-			statement.setDouble(6, producto.getPeso());
-			statement.setDate(7, producto.getVencimiento());
-			statement.setInt(8, producto.getCantidad());
-			
-			int filas = statement.executeUpdate();
-			if(filas>0) {
-				JOptionPane.showMessageDialog(null, "Se agregó");
-			}
+	    try {
+	        PreparedStatement statement = (PreparedStatement) 
+	            con.prepareStatement("INSERT INTO `producto`(`categoria`,`nombre`, `marca`, `precio`,`codigo`,`peso`,`vencimiento`,`cantidad`) VALUES (?,?,?,?,?,?,?,?)");
+	        statement.setString(1, producto.getCategoria());
+	        statement.setString(2, producto.getNombre());
+	        statement.setString(3, producto.getMarca());
+	        statement.setDouble(4, producto.getPrecio());
+	        statement.setInt(5, producto.getCodigo());
+	        statement.setDouble(6, producto.getPeso());
+	        statement.setDate(7, producto.getVencimiento());  // Asegúrate de que sea java.sql.Date
+	        statement.setInt(8, producto.getCantidad());
 
-			
-		} catch (Exception e) {
-System.out.println("No se agregó");		}		
+	        int filas = statement.executeUpdate();
+	        if (filas > 0) {
+	            JOptionPane.showMessageDialog(null, "Se agregó");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 	// -------- Modificar precio de losproductos----------//
 
@@ -181,7 +180,7 @@ public static void ActualizarProducto(producto producto) {
 		try {
 			
 			PreparedStatement statement = (PreparedStatement) 
-					con.prepareStatement("UPDATE `producto` SET `categoria`=?,`nombre`=?,`marca`=? ,`precio`=?,`codigo`=?,`peso`=?,`vencimiento`=?,`cantidad`=?, WHERE id = ?");
+					con.prepareStatement("UPDATE `producto` SET `categoria`=?,`nombre`=?,`marca`=? ,`precio`=?,`codigo`=?,`peso`=?,`vencimiento`=?,`cantidad`=? WHERE id = ?");
 			statement.setString(1, producto.getCategoria());
 			statement.setString(2, producto.getNombre());
 			statement.setString(3, producto.getMarca());

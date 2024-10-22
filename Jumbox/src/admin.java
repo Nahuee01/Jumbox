@@ -1,4 +1,4 @@
-public class admin extends usuario {
+public class admin extends Usuario {
 
 	private int numlegajo;
 

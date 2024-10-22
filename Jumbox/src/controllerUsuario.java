@@ -9,7 +9,7 @@ import com.mysql.jdbc.PreparedStatement;
 public class controllerUsuario {
 	private static Connection con = conexion.getInstance().getConection();
 	
-	public static void agregarUsuario(usuario usuario) {
+	public static void agregarUsuario(Usuario usuario) {
 		try {
 			
 			PreparedStatement statement = (PreparedStatement) 
@@ -28,14 +28,14 @@ public class controllerUsuario {
 		} catch (Exception e) {
 System.out.println("No se agregó");		}		
 	}
-	public static LinkedList<usuario> MostrarUsuarios() {
-	    LinkedList<usuario> usuarios = new LinkedList<>();
+	public static LinkedList<Usuario> MostrarUsuarios() {
+	    LinkedList<Usuario> usuarios = new LinkedList<>();
 	    try {
 	        PreparedStatement statement = (PreparedStatement) con.prepareStatement("SELECT * FROM `usuario`");
 	        ResultSet resultSet = statement.executeQuery();
 	        while (resultSet.next()) {
 	            
-	            usuarios.add(new usuario(resultSet.getString("nombre"), resultSet.getString("rol"), resultSet.getString("contrasena"), resultSet.getString("mail")));
+	            usuarios.add(new Usuario(resultSet.getString("nombre"), resultSet.getString("rol"), resultSet.getString("contrasena"), resultSet.getString("mail")));
 	            System.out.println("Usuario: " + resultSet.getString("mail") + ", Rol: " + resultSet.getString("rol"));
 	        }
 	    } catch (Exception e) {
@@ -43,8 +43,8 @@ System.out.println("No se agregó");		}
 	    }
 	    return usuarios;
 	}
-	public static usuario BuscarUsuario(int id) {
-		usuario nuevo = null;
+	public static Usuario BuscarUsuario(int id) {
+		Usuario nuevo = null;
 		try {
 			
 			PreparedStatement statement = (PreparedStatement) 
@@ -52,7 +52,7 @@ System.out.println("No se agregó");		}
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
-				nuevo = new usuario(resultSet.getString("nombre"), resultSet.getString("rol"),resultSet.getString("contrasena"),resultSet.getString("mail") );
+				nuevo = new Usuario(resultSet.getString("nombre"), resultSet.getString("rol"),resultSet.getString("contrasena"),resultSet.getString("mail") );
 			}
 		
 		} catch (Exception e) {
@@ -63,7 +63,7 @@ System.out.println("No se agregó");		}
 		return nuevo;
 	}
 	public static void EliminarUsuario(int id) {
-		usuario nuevo = null;
+		Usuario nuevo = null;
 		try {
 			
 			PreparedStatement statement = (PreparedStatement) 
@@ -80,7 +80,7 @@ System.out.println("No se agregó");		}
 		
 		
 	}
-	public static void ActualizarUsuario(usuario usuario) {
+	public static void ActualizarUsuario(Usuario usuario) {
 		
 		try {
 			
