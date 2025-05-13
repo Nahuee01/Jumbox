@@ -1,3 +1,4 @@
+import java.awt.GridLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -7,7 +8,10 @@ import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.LinkedList;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
@@ -31,25 +35,25 @@ public class gestorproducto {
 			case 0:
 				// ver gráficos
 				break;
-			case 1:
-				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el codigo del producto"));
+			case 1: // Buscar producto
+				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto"));
 				producto resultado = BuscarProducto(codigoProducto);
 				JOptionPane.showMessageDialog(null, resultado);
 				break;
-			case 2:
-			    int codigoProductoEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese código"));
+			case 2:// Eliminar producto
+			    int codigoProductoEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese ID"));
 			    producto resultado2 = BuscarProducto(codigoProductoEliminar);
 			    if (resultado2 != null) {
 			        String resultadoEliminacion = EliminarProducto(codigoProductoEliminar, resultado2);
 			        JOptionPane.showMessageDialog(null, resultadoEliminacion);
 			    } else {
-			        JOptionPane.showMessageDialog(null, "No se encontró el producto con ese código.");
+			        JOptionPane.showMessageDialog(null, "No se encontró el producto con ese ID.");
 			    }
 			    break;
 
 			case 3:
-			
-			    int codigoProductoModificar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese codigo"));
+				// Modificar producto
+			    int codigoProductoModificar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese ID"));
 			    producto resultado3 = BuscarProducto(codigoProductoModificar);
 			    if (resultado3 != null) {
 			        String productoActualizado = ActualizarProducto(codigoProductoModificar, resultado3);
@@ -59,11 +63,37 @@ public class gestorproducto {
 			    }
 			    break;
 
-			case 4:
-				AgregarProducto(null);
-				break;
-			default:
-				break;
+			case 4: // Agregar producto
+				try {
+			        String categoria = JOptionPane.showInputDialog("Ingrese la categoría:");
+			        String nombre = JOptionPane.showInputDialog("Ingrese el nombre:");
+			        String marca = JOptionPane.showInputDialog("Ingrese la marca:");
+			        double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio:"));
+			        int codigo = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código:"));
+			        double peso = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el peso:"));
+			        java.sql.Date vencimiento = java.sql.Date.valueOf(JOptionPane.showInputDialog("Ingrese fecha de vencimiento (YYYY-MM-DD):"));
+			        int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese cantidad:"));
+
+			        producto nuevoProducto = new producto(categoria, nombre, marca, precio, codigo, peso, vencimiento, cantidad);
+			        
+			        AgregarProducto(nuevoProducto);
+			        String resumen = "Producto agregado exitosamente:\n"
+			                + "Categoría: " + categoria + "\n"
+			                + "Nombre: " + nombre + "\n"
+			                + "Marca: " + marca + "\n"
+			                + "Precio: $" + precio + "\n"
+			                + "Código: " + codigo + "\n"
+			                + "Peso: " + peso + " kg\n"
+			                + "Vencimiento: " + vencimiento + "\n"
+			                + "Cantidad: " + cantidad + " unidades";
+
+			        JOptionPane.showMessageDialog(null, resumen);
+			    } catch (Exception e) {
+			        JOptionPane.showMessageDialog(null, "Error al ingresar los datos: " + e.getMessage());
+			    }
+			    break;
+				    default:
+				     break;
 			}
 		} while (opc != -1);
 	}
@@ -130,11 +160,11 @@ public class gestorproducto {
 	
 	// -------- Busqueda de productos----------//
 	
-	public static producto BuscarProducto(int codigo) {
+	public static producto BuscarProducto(int id) {
 	    producto nuevo = null;
-	    String query = "SELECT * FROM producto WHERE codigo = ?";
+	    String query = "SELECT * FROM producto WHERE idProducto = ?";
 	    try (PreparedStatement statement = (PreparedStatement) con.prepareStatement(query)) {
-	        statement.setInt(1, codigo);
+	        statement.setInt(1, id);
 	        try (ResultSet resultSet = statement.executeQuery()) {
 	            if (resultSet.next()) {
 	                nuevo = new producto(
@@ -157,11 +187,11 @@ public class gestorproducto {
 	
 	// -------- Eliminar cantidad de stock de los productos----------//
 	
-	public static String EliminarProducto(int codigo, producto producto) {
+	public static String EliminarProducto(int id, producto producto) {
 	    try {
 	        PreparedStatement statement = (PreparedStatement) 
-	            con.prepareStatement("DELETE FROM `producto` WHERE codigo= ? ");
-	        statement.setInt(1, codigo);
+	            con.prepareStatement("DELETE FROM `producto` WHERE idProducto= ? ");
+	        statement.setInt(1, id);
 	        int fila = statement.executeUpdate();
 	        if (fila > 0) {
 	            JOptionPane.showMessageDialog(null, "Se borró el producto: " + 
@@ -196,7 +226,7 @@ public class gestorproducto {
 
 	        int filas = statement.executeUpdate();
 	        if (filas > 0) {
-	            JOptionPane.showMessageDialog(null, "Se agregó");
+	            JOptionPane.showMessageDialog(null, "Se agregó correctamente ");
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
