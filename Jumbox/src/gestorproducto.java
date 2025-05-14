@@ -201,7 +201,7 @@ public class gestorproducto {
 	}
 
 	// -------- Agregar productos----------//
-	public static ArrayList<producto> listaProductos = new ArrayList<>();
+
 	public static void AgregarProducto(producto producto) {
 		
 		try {
