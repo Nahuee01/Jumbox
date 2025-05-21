@@ -13,6 +13,7 @@ import com.mysql.jdbc.PreparedStatement;
 
 public class gestorproducto {
 	private static Connection con = conexion.getInstance().getConection();
+	private ArrayList<producto> listaProductos = new ArrayList<>();
 
 // -------------------Menu Gerente-------------------//
 	public void menuGerente() {
@@ -59,41 +60,44 @@ public class gestorproducto {
 				break;
 
 			case 4: // Agregar producto
-				ArrayList<producto> listaProductos = new ArrayList<>();
 				String categoria = JOptionPane.showInputDialog("Ingrese la categoría:");
 				String nombre = JOptionPane.showInputDialog("Ingrese el nombre:");
 				String marca = JOptionPane.showInputDialog("Ingrese la marca:");
-							
+
 				boolean existe = false;
-			    for (producto p : listaProductos) {
-			        if (p.getNombre().equalsIgnoreCase(nombre) && p.getMarca().equalsIgnoreCase(marca)) {
-			            existe = true;
-			            break;
-			        }
-			    }
+				for (producto p : listaProductos) {
+				    if (p.getNombre().equalsIgnoreCase(nombre) && p.getMarca().equalsIgnoreCase(marca)) {
+				        existe = true;
+				        break;
+				    }
+				}
 
-			    if (existe) {
-			        JOptionPane.showMessageDialog(null, "El producto con ese nombre y marca ya existe.");
-			    } else {
-				
-				double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio:"));
-				int codigo = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código:"));
-				double peso = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el peso:"));
-				java.sql.Date vencimiento = java.sql.Date.valueOf(JOptionPane.showInputDialog("Ingrese fecha de vencimiento (YYYY-MM-DD):"));
-				int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese cantidad:"));
-			
+				if (existe) {
+				    JOptionPane.showMessageDialog(null, "El producto con ese nombre y marca ya existe.");
+				} else {
+				    double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio:"));
+				    int codigo = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código:"));
+				    double peso = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el peso:"));
+				    java.sql.Date vencimiento = java.sql.Date.valueOf(JOptionPane.showInputDialog("Ingrese fecha de vencimiento (YYYY-MM-DD):"));
+				    int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese cantidad:"));
 
-				producto nuevoProducto = new producto(categoria, nombre, marca, precio, codigo, peso, vencimiento,
-						cantidad);
+				    producto nuevoProducto = new producto(categoria, nombre, marca, precio, codigo, peso, vencimiento, cantidad);
 
-				AgregarProducto(nuevoProducto);
-				String resumen = "Producto agregado exitosamente:\n" + "Categoría: " + categoria + "\n" + "Nombre: "
-						+ nombre + "\n" + "Marca: " + marca + "\n" + "Precio: $" + precio + "\n" + "Código: " + codigo
-						+ "\n" + "Peso: " + peso + " kg\n" + "Vencimiento: " + vencimiento + "\n" + "Cantidad: "
-						+ cantidad + " unidades";
+				    AgregarProducto(nuevoProducto); // Guarda en base de datos
+				    listaProductos.add(nuevoProducto); // Guarda en memoria
 
-				JOptionPane.showMessageDialog(null, resumen);
-			    }
+				    String resumen = "Producto agregado exitosamente:\n" +
+				            "Categoría: " + categoria + "\n" +
+				            "Nombre: " + nombre + "\n" +
+				            "Marca: " + marca + "\n" +
+				            "Precio: $" + precio + "\n" +
+				            "Código: " + codigo + "\n" +
+				            "Peso: " + peso + " kg\n" +
+				            "Vencimiento: " + vencimiento + "\n" +
+				            "Cantidad: " + cantidad + " unidades";
+
+				    JOptionPane.showMessageDialog(null, resumen);
+				}
 				break;
 			default:
 				break;
