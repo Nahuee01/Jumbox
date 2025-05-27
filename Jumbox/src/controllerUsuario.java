@@ -80,9 +80,9 @@ public class controllerUsuario {
 	                resultSet.getString("contrasena"),
 	                resultSet.getString("rol")
 	            );
-	            nuevo.setId(resultSet.getInt("idusuario")); // Guarda el ID tambiÈn
+	            nuevo.setId(resultSet.getInt("idusuario")); // Guarda el ID tambi√©n
 	        } else {
-	            System.out.println("No se encontrÛ usuario con ID: " + id);
+	            System.out.println("No se encontr√≥ usuario con ID: " + id);
 	        }
 	    } catch (Exception e) {
 	        System.out.println("Error al buscar usuario: " + e.getMessage());
@@ -94,47 +94,57 @@ public class controllerUsuario {
 	// -------- Eliminar de Usuarios----------//
 	
 	public static void EliminarUsuario(int id) {
-		Usuario nuevo = null;
-		try {
-			
-			PreparedStatement statement = (PreparedStatement) 
-					con.prepareStatement("DELETE FROM `usuario` WHERE idusuario= ? ");
-			statement.setInt(1, id);
-			int fila = statement.executeUpdate();
-			if (fila>0) {
-				JOptionPane.showMessageDialog(null, "Se borrÛ");
-			}
-		
-		} catch (Exception e) {
-			System.out.println("No se borrÛ");		
-		}
-		
-		
+	    try {
+	        PreparedStatement statement = (PreparedStatement) 
+	            con.prepareStatement("DELETE FROM usuario WHERE idusuario = ?");
+	        statement.setInt(1, id);
+	        int fila = statement.executeUpdate();
+
+	        if (fila > 0) {
+	            // Tambi√©n eliminar de la lista en memoria
+	            usuarios.removeIf(u -> u.getId() == id); // ‚Üê Remueve el usuario por ID
+	            JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente.");
+	        } else {
+	            JOptionPane.showMessageDialog(null, "No se encontr√≥ usuario con ese ID.");
+	        }
+
+	    } catch (Exception e) {
+	        System.out.println("Error al eliminar usuario: " + e.getMessage());
+	        e.printStackTrace();
+	    }
 	}
 	
 	// -------- Actualizar  Usuarios----------//
 	
 	public static void ActualizarUsuario(Usuario usuario) {
-		
-		try {
-			
-			PreparedStatement statement = (PreparedStatement) 
-					con.prepareStatement("UPDATE `usuario` SET `nombre`=?,`mail`=?,`contrasena`=?,`rol`=? WHERE idusuario = ?");
-			statement.setString(1, usuario.getNombre());
-			statement.setString(2, usuario.getMail());
-			statement.setString(3, usuario.getContrasena());
-			statement.setString(4, usuario.getRol());
+	    try {
+	        PreparedStatement statement = (PreparedStatement)
+	            con.prepareStatement("UPDATE usuario SET nombre = ?, mail = ?, contrasena = ?, rol = ? WHERE idusuario = ?");
+	        statement.setString(1, usuario.getNombre());
+	        statement.setString(2, usuario.getMail());
+	        statement.setString(3, usuario.getContrasena());
+	        statement.setString(4, usuario.getRol());
+	        statement.setInt(5, usuario.getId()); // ¬°Faltaba esto!
 
-			int fila = statement.executeUpdate();
-			if (fila>0) {
-				JOptionPane.showMessageDialog(null, "Se actualizÛ");
-			}
-		
-		} catch (Exception e) {
-			System.out.println("No se borrÛ");		
-		}
-		
-		
+	        int fila = statement.executeUpdate();
+	        if (fila > 0) {
+	            // Actualizar tambi√©n en la LinkedList
+	            for (int i = 0; i < usuarios.size(); i++) {
+	                if (usuarios.get(i).getId() == usuario.getId()) {
+	                    usuarios.set(i, usuario); // Reemplaza el usuario con los nuevos datos
+	                    break;
+	                }
+	            }
+	            JOptionPane.showMessageDialog(null, "Usuario actualizado correctamente.");
+	        } else {
+	            JOptionPane.showMessageDialog(null, "No se encontr√≥ el usuario para actualizar.");
+	        }
+
+	    } catch (Exception e) {
+	        System.out.println("Error al actualizar: " + e.getMessage());
+	        e.printStackTrace();
+	    }
 	}
+
 
 }
