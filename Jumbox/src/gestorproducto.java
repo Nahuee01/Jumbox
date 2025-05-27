@@ -14,6 +14,7 @@ import com.mysql.jdbc.PreparedStatement;
 public class gestorproducto {
 	private static Connection con = conexion.getInstance().getConection();
 	private ArrayList<producto> listaProductos = new ArrayList<>();
+	
 
 // -------------------Menu Gerente-------------------//
 	public void menuGerente() {
@@ -28,7 +29,7 @@ public class gestorproducto {
 
 			switch (opc) {
 			case 0:
-				// ver gráficos
+				// ver grÃ¡ficos
 				break;
 			case 1: // Buscar producto
 				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto"));
@@ -43,7 +44,7 @@ public class gestorproducto {
 					JOptionPane.showMessageDialog(null, resultadoEliminacion);
 
 				} else {
-					JOptionPane.showMessageDialog(null, "No se encontró el producto con ese ID.");
+					JOptionPane.showMessageDialog(null, "No se encontrÃ³ el producto con ese ID.");
 				}
 				break;
 
@@ -60,7 +61,7 @@ public class gestorproducto {
 				break;
 
 			case 4: // Agregar producto
-				String categoria = JOptionPane.showInputDialog("Ingrese la categoría:");
+				String categoria = JOptionPane.showInputDialog("Ingrese la categorÃ­a:");
 				String nombre = JOptionPane.showInputDialog("Ingrese el nombre:");
 				String marca = JOptionPane.showInputDialog("Ingrese la marca:");
 
@@ -76,7 +77,7 @@ public class gestorproducto {
 				    JOptionPane.showMessageDialog(null, "El producto con ese nombre y marca ya existe.");
 				} else {
 				    double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio:"));
-				    int codigo = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el código:"));
+				    int codigo = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el cÃ³digo:"));
 				    double peso = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el peso:"));
 				    java.sql.Date vencimiento = java.sql.Date.valueOf(JOptionPane.showInputDialog("Ingrese fecha de vencimiento (YYYY-MM-DD):"));
 				    int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese cantidad:"));
@@ -87,11 +88,11 @@ public class gestorproducto {
 				    listaProductos.add(nuevoProducto); // Guarda en memoria
 
 				    String resumen = "Producto agregado exitosamente:\n" +
-				            "Categoría: " + categoria + "\n" +
+				            "CategorÃ­a: " + categoria + "\n" +
 				            "Nombre: " + nombre + "\n" +
 				            "Marca: " + marca + "\n" +
 				            "Precio: $" + precio + "\n" +
-				            "Código: " + codigo + "\n" +
+				            "CÃ³digo: " + codigo + "\n" +
 				            "Peso: " + peso + " kg\n" +
 				            "Vencimiento: " + vencimiento + "\n" +
 				            "Cantidad: " + cantidad + " unidades";
@@ -108,34 +109,58 @@ public class gestorproducto {
 	// -------------------Menu Admin-------------------//
 
 	public void menuAdmin() {
+	    String[] menu = { "Agregar Usuario", "Buscar Usuario", "Eliminar Usuario", "Actualizar Usuario" };
+	    int opc;
 
-		String[] menu = { "Agregar Usuario", "Buscar Usuario", "Eliminar Usuario", "Actualizar Usuario",
-				"Agregar Producto" };
+	    do {
+	        opc = JOptionPane.showOptionDialog(null, "Seleccione una opciÃ³n", "Menu Admin", 0, 0, null, menu, menu[0]);
 
-		int opc;
+	        switch (opc) {
+	            case 0: // Agregar Usuario
+	                String nombre = JOptionPane.showInputDialog("Ingrese nombre:");
+	                String mail = JOptionPane.showInputDialog("Ingrese mail:");
+	                String contrasena = JOptionPane.showInputDialog("Ingrese contraseÃ±a:");
+	                String rol = JOptionPane.showInputDialog("Ingrese rol:");
 
-		do {
-			opc = JOptionPane.showOptionDialog(null, "Seleccione una opcion", "Menu Principal", 0, 0, null, menu,
-					menu[0]);
+	                Usuario nuevo = new Usuario(nombre, mail, contrasena, rol);
+	                controllerUsuario.agregarUsuario(nuevo);
+	                break;
 
-			switch (opc) {
-			case 0:
-				controllerUsuario.agregarUsuario(null);
-				break;
-			case 1:
-				controllerUsuario.BuscarUsuario(opc);
-				break;
-			case 2:
-				controllerUsuario.EliminarUsuario(opc);
-				break;
-			case 3:
-				controllerUsuario.ActualizarUsuario(null);
-				break;
-			default:
-				break;
-			}
-		} while (opc != -1);
+	            case 1: // Buscar Usuario
+	                int idBuscar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese ID del usuario a buscar:"));
+	                Usuario encontrado = controllerUsuario.BuscarUsuario(idBuscar);
+	                if (encontrado != null) {
+	                    JOptionPane.showMessageDialog(null, "Usuario encontrado:\n" +
+	                            "Nombre: " + encontrado.getNombre() + "\n" +
+	                            "Mail: " + encontrado.getMail() + "\n" +
+	                            "Rol: " + encontrado.getRol());
+	                } else {
+	                    JOptionPane.showMessageDialog(null, "Usuario no encontrado.");
+	                }
+	                break;
+
+	            case 2: // Eliminar Usuario
+	                int idEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese ID del usuario a eliminar:"));
+	                controllerUsuario.EliminarUsuario(idEliminar);
+	                break;
+
+	            case 3: // Actualizar Usuario
+	                int idActualizar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese ID del usuario a actualizar:"));
+	                String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:");
+	                String nuevoRol = JOptionPane.showInputDialog("Nuevo rol:");
+	                String nuevaContrasena = JOptionPane.showInputDialog("Nueva contraseÃ±a:");
+
+	                Usuario actualizado = new Usuario(nuevoNombre, nuevoRol, nuevaContrasena, "");
+	                actualizado.setId(idActualizar); 
+	                controllerUsuario.ActualizarUsuario(actualizado);
+	                break;
+
+	            default:
+	                break;
+	        }
+	    } while (opc != -1);
 	}
+
 
 	// -------------------Menu Empleado-------------------//
 
@@ -150,7 +175,7 @@ public class gestorproducto {
 
 			switch (opc) {
 			case 0:
-				// ver gráficos
+				// ver grÃ¡ficos
 				break;
 			case 1:
 				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto"));
@@ -186,24 +211,25 @@ public class gestorproducto {
 
 	// -------- Eliminar cantidad de stock de los productos----------//
 
-	public static String EliminarProducto(int id, producto producto) {
-		try {
-			PreparedStatement statement = (PreparedStatement) con
-					.prepareStatement("DELETE FROM `producto` WHERE idProducto= ? ");
-			statement.setInt(1, id);
-			int fila = statement.executeUpdate();
-			if (fila > 0) {
-				JOptionPane.showMessageDialog(null,
-						"Se borró el producto: " + producto.getNombre() + producto.getMarca() + producto.getCodigo());
-			} else {
-				JOptionPane.showMessageDialog(null, "No se encontró el producto con ese Codigo");
-			}
-		} catch (Exception e) {
-			System.out.println("Error al borrar el producto: " + e.getMessage());
-		}
-		return null;
-	}
+	public String EliminarProducto(int id, producto producto) {
+	    try {
+	        PreparedStatement statement = (PreparedStatement) con
+	                .prepareStatement("DELETE FROM `producto` WHERE idProducto= ? ");
+	        statement.setInt(1, id);
+	        int fila = statement.executeUpdate();
+	        if (fila > 0) {
+	            // ðŸ”§ Eliminar de la lista en memoria
+	            listaProductos.removeIf(p -> p.getCodigo() == producto.getCodigo());
 
+	            return "Se borrÃ³ el producto: " + producto.getNombre() + " " + producto.getMarca() + " (CÃ³digo: " + producto.getCodigo() + ")";
+	        } else {
+	            return "No se encontrÃ³ el producto con ese CÃ³digo";
+	        }
+	    } catch (Exception e) {
+	        System.out.println("Error al borrar el producto: " + e.getMessage());
+	        return "Error al borrar el producto.";
+	    }
+	}
 	// -------- Agregar productos----------//
 
 	public static void AgregarProducto(producto producto) {
@@ -222,7 +248,7 @@ public class gestorproducto {
 
 			int filas = statement.executeUpdate();
 			if (filas > 0) {
-				JOptionPane.showMessageDialog(null, "Se agregó correctamente ");
+				JOptionPane.showMessageDialog(null, "Se agregÃ³ correctamente ");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -231,35 +257,54 @@ public class gestorproducto {
 
 	// -------- Modificar precio de los productos----------//
 
-	public static String ActualizarProducto(int id, producto producto) {
+	public String ActualizarProducto(int id, producto producto) {
+	    // ðŸ”§ Solicitar los nuevos datos al usuario
+	    String nuevaCategoria = JOptionPane.showInputDialog("Nueva categorÃ­a:", producto.getCategoria());
+	    String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", producto.getNombre());
+	    String nuevaMarca = JOptionPane.showInputDialog("Nueva marca:", producto.getMarca());
+	    double nuevoPrecio = Double.parseDouble(JOptionPane.showInputDialog("Nuevo precio:", producto.getPrecio()));
+	    int nuevoCodigo = Integer.parseInt(JOptionPane.showInputDialog("Nuevo cÃ³digo:", producto.getCodigo()));
+	    double nuevoPeso = Double.parseDouble(JOptionPane.showInputDialog("Nuevo peso:", producto.getPeso()));
+	    java.sql.Date nuevoVencimiento = java.sql.Date.valueOf(JOptionPane.showInputDialog("Nueva fecha de vencimiento (YYYY-MM-DD):", producto.getVencimiento().toString()));
+	    int nuevaCantidad = Integer.parseInt(JOptionPane.showInputDialog("Nueva cantidad:", producto.getCantidad()));
 
-		try {
-			PreparedStatement statement = (PreparedStatement) con.prepareStatement(
-					"UPDATE `producto` SET `categoria`=?,`nombre`=?,`marca`=?,`precio`=?,`codigo`=?,`peso`=?,`vencimiento`=?,`cantidad`=? WHERE id = ?");
+	    try {
+	        PreparedStatement statement = (PreparedStatement) con.prepareStatement(
+	                "UPDATE `producto` SET `categoria`=?,`nombre`=?,`marca`=?,`precio`=?,`codigo`=?,`peso`=?,`vencimiento`=?,`cantidad`=? WHERE idProducto = ?");
 
-			statement.setString(1, producto.getCategoria());
-			statement.setString(2, producto.getNombre());
-			statement.setString(3, producto.getMarca());
-			statement.setDouble(4, producto.getPrecio());
-			statement.setInt(5, producto.getCodigo());
-			statement.setDouble(6, producto.getPeso());
-			statement.setDate(7, producto.getVencimiento());
-			statement.setInt(8, producto.getCantidad());
+	        statement.setString(1, nuevaCategoria);
+	        statement.setString(2, nuevoNombre);
+	        statement.setString(3, nuevaMarca);
+	        statement.setDouble(4, nuevoPrecio);
+	        statement.setInt(5, nuevoCodigo);
+	        statement.setDouble(6, nuevoPeso);
+	        statement.setDate(7, nuevoVencimiento);
+	        statement.setInt(8, nuevaCantidad);
+	        statement.setInt(9, id);
 
-			// se coloca el id al final
-			statement.setInt(9, id);
-
-			int fila = statement.executeUpdate();
-			if (fila > 0) {
-				JOptionPane.showMessageDialog(null, "Se actualizó el producto correctamente");
-			} else {
-				JOptionPane.showMessageDialog(null, "No se encontró el producto con ese ID");
-			}
-
-		} catch (Exception e) {
-			System.out.println("Error al actualizar el producto: " + e.getMessage());
-		}
-		return null;
+	        int fila = statement.executeUpdate();
+	        if (fila > 0) {
+	            // ðŸ”§ Actualizar en memoria
+	            for (producto p : listaProductos) {
+	                if (p.getCodigo() == producto.getCodigo()) {
+	                    p.setCategoria(nuevaCategoria);
+	                    p.setNombre(nuevoNombre);
+	                    p.setMarca(nuevaMarca);
+	                    p.setPrecio(nuevoPrecio);
+	                    p.setCodigo(nuevoCodigo);
+	                    p.setPeso(nuevoPeso);
+	                    p.setVencimiento(nuevoVencimiento);
+	                    p.setCantidad(nuevaCantidad);
+	                    break;
+	                }
+	            }
+	            return "Se actualizÃ³ el producto correctamente.";
+	        } else {
+	            return "No se encontrÃ³ el producto con ese ID.";
+	        }
+	    } catch (Exception e) {
+	        System.out.println("Error al actualizar el producto: " + e.getMessage());
+	        return "Error al actualizar el producto.";
+	    }
 	}
-
 }

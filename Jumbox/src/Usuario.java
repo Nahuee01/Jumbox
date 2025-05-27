@@ -1,6 +1,7 @@
 
 public class Usuario {
 
+	private int id;
 	private String nombre;
 	private String mail;
 	private String contrasena;
@@ -12,6 +13,14 @@ public class Usuario {
 		this.mail = mail;
 		this.contrasena = contrasena;
 		this.rol = rol;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getNombre() {
