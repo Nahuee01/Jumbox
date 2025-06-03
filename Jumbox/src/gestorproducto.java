@@ -18,7 +18,7 @@ public class gestorproducto {
 
 // -------------------Menu Gerente-------------------//
 	public void menuGerente() {
-		String[] menu = { "Ver Graficos", "Buscar Producto", "Eliminar Producto", "Modificar Producto",
+		String[] menu = { "Buscar Producto", "Eliminar Producto", "Modificar Producto",
 				"Agregar Producto" };
 
 		int opc;
@@ -28,15 +28,20 @@ public class gestorproducto {
 					menu[0]);
 
 			switch (opc) {
-			case 0:
-				// ver gráficos
-				break;
-			case 1: // Buscar producto
+			case 0:// Buscar producto
 				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto"));
 				producto resultado = BuscarProducto(codigoProducto);
-				JOptionPane.showMessageDialog(null, resultado);
+				JOptionPane.showMessageDialog(null,
+						"Categoría: " + resultado.getCategoria() + "\n" +
+			            "Nombre: " + resultado.getNombre() + "\n" +
+			            "Marca: " + resultado.getMarca() + "\n" +
+			            "Precio: $" + resultado.getPrecio() + "\n" +
+			            "Código: " + resultado.getCodigo() + "\n" +
+			            "Peso: " + resultado.getPeso() + " kg\n" +
+			            "Vencimiento: " + resultado.getVencimiento() + "\n" +
+			            "Cantidad: " + resultado.getCantidad() + " unidades");
 				break;
-			case 2:// Eliminar producto
+			case 1: // Eliminar producto
 				int codigoProductoEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese ID"));
 				producto resultado2 = BuscarProducto(codigoProductoEliminar);
 				if (resultado2 != null) {
@@ -47,9 +52,7 @@ public class gestorproducto {
 					JOptionPane.showMessageDialog(null, "No se encontró el producto con ese ID.");
 				}
 				break;
-
-			case 3:
-				// Modificar producto
+			case 2:// Modificar producto
 				int codigoProductoModificar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese ID"));
 				producto resultado3 = BuscarProducto(codigoProductoModificar);
 				if (resultado3 != null) {
@@ -60,7 +63,7 @@ public class gestorproducto {
 				}
 				break;
 
-			case 4: // Agregar producto
+			case 3:// Agregar producto
 				String categoria = JOptionPane.showInputDialog("Ingrese la categoría:");
 				String nombre = JOptionPane.showInputDialog("Ingrese el nombre:");
 				String marca = JOptionPane.showInputDialog("Ingrese la marca:");
@@ -84,8 +87,8 @@ public class gestorproducto {
 
 				    producto nuevoProducto = new producto(categoria, nombre, marca, precio, codigo, peso, vencimiento, cantidad);
 
-				    AgregarProducto(nuevoProducto); // Guarda en base de datos
-				    listaProductos.add(nuevoProducto); // Guarda en memoria
+				    AgregarProducto(nuevoProducto); 
+				    listaProductos.add(nuevoProducto); 
 
 				    String resumen = "Producto agregado exitosamente:\n" +
 				            "Categoría: " + categoria + "\n" +
@@ -100,6 +103,7 @@ public class gestorproducto {
 				    JOptionPane.showMessageDialog(null, resumen);
 				}
 				break;
+							
 			default:
 				break;
 			}
@@ -197,9 +201,14 @@ public class gestorproducto {
 			statement.setInt(1, id);
 			try (ResultSet resultSet = statement.executeQuery()) {
 				if (resultSet.next()) {
-					nuevo = new producto(resultSet.getString("categoria"), resultSet.getString("nombre"),
-							resultSet.getString("marca"), resultSet.getDouble("precio"), resultSet.getInt("codigo"),
-							resultSet.getDouble("peso"), resultSet.getDate("vencimiento"),
+					nuevo = new producto(
+							resultSet.getString("categoria"), 
+							resultSet.getString("nombre"),
+							resultSet.getString("marca"), 
+							resultSet.getDouble("precio"), 
+							resultSet.getInt("codigo"),
+							resultSet.getDouble("peso"), 
+							resultSet.getDate("vencimiento"),
 							resultSet.getInt("cantidad"));
 				}
 			}
@@ -217,8 +226,7 @@ public class gestorproducto {
 	                .prepareStatement("DELETE FROM `producto` WHERE idProducto= ? ");
 	        statement.setInt(1, id);
 	        int fila = statement.executeUpdate();
-	        if (fila > 0) {
-	            // 🔧 Eliminar de la lista en memoria
+	        if (fila > 0) {	           
 	            listaProductos.removeIf(p -> p.getCodigo() == producto.getCodigo());
 
 	            return "Se borró el producto: " + producto.getNombre() + " " + producto.getMarca() + " (Código: " + producto.getCodigo() + ")";
@@ -258,7 +266,7 @@ public class gestorproducto {
 	// -------- Modificar precio de los productos----------//
 
 	public String ActualizarProducto(int id, producto producto) {
-	    // 🔧 Solicitar los nuevos datos al usuario
+
 	    String nuevaCategoria = JOptionPane.showInputDialog("Nueva categoría:", producto.getCategoria());
 	    String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", producto.getNombre());
 	    String nuevaMarca = JOptionPane.showInputDialog("Nueva marca:", producto.getMarca());
@@ -284,7 +292,6 @@ public class gestorproducto {
 
 	        int fila = statement.executeUpdate();
 	        if (fila > 0) {
-	            // 🔧 Actualizar en memoria
 	            for (producto p : listaProductos) {
 	                if (p.getCodigo() == producto.getCodigo()) {
 	                    p.setCategoria(nuevaCategoria);
