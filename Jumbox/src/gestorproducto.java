@@ -267,39 +267,24 @@ public class gestorproducto {
 
 	public String ActualizarProducto(int id, producto producto) {
 
-	    String nuevaCategoria = JOptionPane.showInputDialog("Nueva categoría:", producto.getCategoria());
-	    String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", producto.getNombre());
-	    String nuevaMarca = JOptionPane.showInputDialog("Nueva marca:", producto.getMarca());
 	    double nuevoPrecio = Double.parseDouble(JOptionPane.showInputDialog("Nuevo precio:", producto.getPrecio()));
-	    int nuevoCodigo = Integer.parseInt(JOptionPane.showInputDialog("Nuevo código:", producto.getCodigo()));
-	    double nuevoPeso = Double.parseDouble(JOptionPane.showInputDialog("Nuevo peso:", producto.getPeso()));
 	    java.sql.Date nuevoVencimiento = java.sql.Date.valueOf(JOptionPane.showInputDialog("Nueva fecha de vencimiento (YYYY-MM-DD):", producto.getVencimiento().toString()));
 	    int nuevaCantidad = Integer.parseInt(JOptionPane.showInputDialog("Nueva cantidad:", producto.getCantidad()));
 
 	    try {
 	        PreparedStatement statement = (PreparedStatement) con.prepareStatement(
-	                "UPDATE `producto` SET `categoria`=?,`nombre`=?,`marca`=?,`precio`=?,`codigo`=?,`peso`=?,`vencimiento`=?,`cantidad`=? WHERE idProducto = ?");
+	                "UPDATE `producto` SET `precio`=?, `vencimiento`=?, `cantidad`=? WHERE idProducto = ?");
 
-	        statement.setString(1, nuevaCategoria);
-	        statement.setString(2, nuevoNombre);
-	        statement.setString(3, nuevaMarca);
-	        statement.setDouble(4, nuevoPrecio);
-	        statement.setInt(5, nuevoCodigo);
-	        statement.setDouble(6, nuevoPeso);
-	        statement.setDate(7, nuevoVencimiento);
-	        statement.setInt(8, nuevaCantidad);
-	        statement.setInt(9, id);
+	        statement.setDouble(1, nuevoPrecio);
+	        statement.setDate(2, nuevoVencimiento);
+	        statement.setInt(3, nuevaCantidad);
+	        statement.setInt(4, id);
 
 	        int fila = statement.executeUpdate();
 	        if (fila > 0) {
 	            for (producto p : listaProductos) {
 	                if (p.getCodigo() == producto.getCodigo()) {
-	                    p.setCategoria(nuevaCategoria);
-	                    p.setNombre(nuevoNombre);
-	                    p.setMarca(nuevaMarca);
 	                    p.setPrecio(nuevoPrecio);
-	                    p.setCodigo(nuevoCodigo);
-	                    p.setPeso(nuevoPeso);
 	                    p.setVencimiento(nuevoVencimiento);
 	                    p.setCantidad(nuevaCantidad);
 	                    break;
