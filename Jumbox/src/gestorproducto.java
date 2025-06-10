@@ -193,120 +193,7 @@ public class gestorproducto {
 	}
 	
 	
-	// -------------------Menu Cliente-------------------//
-
-	public void menuCliente() {
-	    cargarProductosDesdeBD(); // <<--- Cargar productos desde la base de datos
-
-	    String[] menu = { "Comprar" };
-	    int opc;
-
-	    do {
-	        opc = JOptionPane.showOptionDialog(null, "Seleccione una opción", "Menú Cliente", 0, 0, null, menu, menu[0]);
-
-	        switch (opc) {
-	        case 0: // Comprar
-	            cargarProductosDesdeBD(); // Actualiza lista desde la base
-
-	            if (listaProductos.isEmpty()) {
-	                JOptionPane.showMessageDialog(null, "No hay productos disponibles.");
-	                break;
-	            }
-
-	            ArrayList<String> resumenCompra = new ArrayList<>();
-	            double totalCompra = 0;
-
-	            boolean seguirComprando = false;
-
-	            do {
-	                // Armar menú de opciones
-	                String[] opciones = new String[listaProductos.size()];
-	                for (int i = 0; i < listaProductos.size(); i++) {
-	                    producto p = listaProductos.get(i);
-	                    opciones[i] = p.getNombre() + " - $" + p.getPrecio() + " (" + p.getCantidad() + " disponibles)";
-	                }
-
-	                String seleccion = (String) JOptionPane.showInputDialog(
-	                    null,
-	                    "Seleccione un producto para comprar:",
-	                    "Productos disponibles",
-	                    JOptionPane.PLAIN_MESSAGE,
-	                    null,
-	                    opciones,
-	                    opciones[0]
-	                );
-
-	                if (seleccion == null) break;
-
-	                // Buscar producto seleccionado
-	                producto prodSeleccionado = null;
-	                for (producto p : listaProductos) {
-	                    String opcion = p.getNombre() + " - $" + p.getPrecio() + " (" + p.getCantidad() + " disponibles)";
-	                    if (opcion.equals(seleccion)) {
-	                        prodSeleccionado = p;
-	                        break;
-	                    }
-	                }
-
-	                if (prodSeleccionado == null) {
-	                    JOptionPane.showMessageDialog(null, "Error al seleccionar el producto.");
-	                    break;
-	                }
-
-	                try {
-	                    int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad a comprar:"));
-
-	                    if (cantidad <= 0) {
-	                        JOptionPane.showMessageDialog(null, "Cantidad inválida.");
-	                    } else if (cantidad > prodSeleccionado.getCantidad()) {
-	                        JOptionPane.showMessageDialog(null, "No hay suficiente stock.");
-	                    } else {
-	                        double subtotal = prodSeleccionado.getPrecio() * cantidad;
-	                        totalCompra += subtotal;
-
-	                        // Actualiza stock
-	                        int nuevoStock = prodSeleccionado.getCantidad() - cantidad;
-	                        prodSeleccionado.setCantidad(nuevoStock);
-	                        actualizarStockEnBD(prodSeleccionado.getCodigo(), nuevoStock);
-
-	                        // Agrega a resumen
-	                        resumenCompra.add(prodSeleccionado.getNombre() + " x" + cantidad + " = $" + subtotal);
-
-	                        // Preguntar si quiere seguir
-	                        int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea comprar otro producto?", "Continuar", JOptionPane.YES_NO_OPTION);
-	                        seguirComprando = (respuesta == JOptionPane.YES_OPTION);
-	                    }
-
-	                } catch (NumberFormatException e) {
-	                    JOptionPane.showMessageDialog(null, "Entrada inválida.");
-	                    seguirComprando = false;
-	                }
-
-	            } while (seguirComprando);
-
-	            // Mostrar resumen final
-	            if (!resumenCompra.isEmpty()) {
-	                StringBuilder resumen = new StringBuilder("Resumen de compra:\n\n");
-	                for (String item : resumenCompra) {
-	                    resumen.append(item).append("\n");
-	                }
-	                resumen.append("\nTotal a pagar: $").append(totalCompra);
-	                JOptionPane.showMessageDialog(null, resumen.toString());
-	            } else {
-	                JOptionPane.showMessageDialog(null, "No se realizaron compras.");
-	            }
-
-	            break;
-
-
-
-
-	            default:
-	                break;
-	        }
-	    } while (opc != -1);
-	}
-
+	
 
 	// -------- Busqueda de productos----------//
 
@@ -416,6 +303,124 @@ public class gestorproducto {
 	    }
 	}
 	
+	
+	// -------------------Menu Cliente-------------------//
+
+		public void menuCliente() {
+		    cargarProductosDesdeBD(); // <<--- Cargar productos desde la base de datos
+
+		    String[] menu = { "Comprar" };
+		    int opc;
+
+		    do {
+		        opc = JOptionPane.showOptionDialog(null, "Seleccione una opción", "Menú Cliente", 0, 0, null, menu, menu[0]);
+
+		        switch (opc) {
+		        case 0: // Comprar
+		            cargarProductosDesdeBD(); // Actualiza lista desde la base
+
+		            if (listaProductos.isEmpty()) {
+		                JOptionPane.showMessageDialog(null, "No hay productos disponibles.");
+		                break;
+		            }
+
+		            ArrayList<String> resumenCompra = new ArrayList<>();
+		            double totalCompra = 0;
+
+		            boolean seguirComprando = false;
+
+		            do {
+		                // Armar menú de opciones
+		                String[] opciones = new String[listaProductos.size()];
+		                for (int i = 0; i < listaProductos.size(); i++) {
+		                    producto p = listaProductos.get(i);
+		                    opciones[i] = p.getNombre() + " - $" + p.getPrecio() + " (" + p.getCantidad() + " disponibles)";
+		                }
+
+		                String seleccion = (String) JOptionPane.showInputDialog(
+		                    null,
+		                    "Seleccione un producto para comprar:",
+		                    "Productos disponibles",
+		                    JOptionPane.PLAIN_MESSAGE,
+		                    null,
+		                    opciones,
+		                    opciones[0]
+		                );
+
+		                if (seleccion == null) break;
+
+		                // Buscar producto seleccionado
+		                producto prodSeleccionado = null;
+		                for (producto p : listaProductos) {
+		                    String opcion = p.getNombre() + " - $" + p.getPrecio() + " (" + p.getCantidad() + " disponibles)";
+		                    if (opcion.equals(seleccion)) {
+		                        prodSeleccionado = p;
+		                        break;
+		                    }
+		                }
+
+		                if (prodSeleccionado == null) {
+		                    JOptionPane.showMessageDialog(null, "Error al seleccionar el producto.");
+		                    break;
+		                }
+
+		                try {
+		                    int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad a comprar:"));
+
+		                    if (cantidad <= 0) {
+		                        JOptionPane.showMessageDialog(null, "Cantidad inválida.");
+		                    } else if (cantidad > prodSeleccionado.getCantidad()) {
+		                        JOptionPane.showMessageDialog(null, "No hay suficiente stock.");
+		                    } else {
+		                        double subtotal = prodSeleccionado.getPrecio() * cantidad;
+		                        totalCompra += subtotal;
+
+		                        // Actualiza stock
+		                        int nuevoStock = prodSeleccionado.getCantidad() - cantidad;
+		                        prodSeleccionado.setCantidad(nuevoStock);
+		                        actualizarStockEnBD(prodSeleccionado.getCodigo(), nuevoStock);
+
+		                        // Agrega a resumen
+		                        resumenCompra.add(prodSeleccionado.getNombre() + " x" + cantidad + " = $" + subtotal);
+
+		                        // Preguntar si quiere seguir
+		                        int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea comprar otro producto?", "Continuar", JOptionPane.YES_NO_OPTION);
+		                        seguirComprando = (respuesta == JOptionPane.YES_OPTION);
+		                    }
+
+		                } catch (NumberFormatException e) {
+		                    JOptionPane.showMessageDialog(null, "Entrada inválida.");
+		                    seguirComprando = false;
+		                }
+
+		            } while (seguirComprando);
+
+		            // Mostrar resumen final
+		            if (!resumenCompra.isEmpty()) {
+		                StringBuilder resumen = new StringBuilder("Resumen de compra:\n\n");
+		                for (String item : resumenCompra) {
+		                    resumen.append(item).append("\n");
+		                }
+		                resumen.append("\nTotal a pagar: $").append(totalCompra);
+		                JOptionPane.showMessageDialog(null, resumen.toString());
+		            } else {
+		                JOptionPane.showMessageDialog(null, "No se realizaron compras.");
+		            }
+
+		            break;
+
+
+
+
+		            default:
+		                break;
+		        }
+		    } while (opc != -1);
+		}
+
+		
+	// Base de datos
+	
 	public void cargarProductosDesdeBD() {
 	    listaProductos.clear(); // Limpiar lista antes de volver a cargar
 
@@ -466,18 +471,18 @@ public class gestorproducto {
 	
 	public static void registrarCompraEnBD(int idProducto, int idUsuario, int cantidad) {
 	    Connection conn = null;
-	    PreparedStatement pstmt = null;
+	    java.sql.PreparedStatement pstmt = null;
 
 	    try {
 	        conn = conexion.getInstance().getConection(); // tu método de conexión
 
 	        String sql = "INSERT INTO compras (idProducto, idUsuario, cantidad, fecha) VALUES (?, ?, ?, ?)";
-	        pstmt = (PreparedStatement) conn.prepareStatement(sql);
+	        pstmt = conn.prepareStatement(sql);
 
 	        pstmt.setInt(1, idProducto);
 	        pstmt.setInt(2, idUsuario);
 	        pstmt.setInt(3, cantidad);
-	        pstmt.setDate(4, new java.sql.Date(System.currentTimeMillis())); // Fecha actual
+	        pstmt.setDate(4, new java.sql.Date(System.currentTimeMillis())); 
 
 	        pstmt.executeUpdate();
 
