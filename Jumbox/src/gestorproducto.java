@@ -146,7 +146,7 @@ public class gestorproducto {
 				String nuevaContrasena = JOptionPane.showInputDialog("Nueva contraseña:");
 
 				Usuario actualizado = new Usuario(nuevoNombre, nuevoRol, nuevaContrasena, "");
-				actualizado.setId(idActualizar);
+				actualizado.setIdUsuario(idActualizar);
 				controllerUsuario.ActualizarUsuario(actualizado);
 				break;
 
@@ -159,7 +159,7 @@ public class gestorproducto {
 	// -------------------Menu Empleado-------------------//
 
 	public void menuEmpleado() {
-		String[] menu = {  "Buscar Producto" };
+		String[] menu = { "Buscar Producto" };
 
 		int opc;
 
@@ -173,7 +173,7 @@ public class gestorproducto {
 				producto resultado = BuscarProducto(codigoProducto);
 				JOptionPane.showMessageDialog(null, resultado);
 				break;
-				
+
 			default:
 				break;
 			}
@@ -288,7 +288,7 @@ public class gestorproducto {
 	// -------------------Menu Cliente-------------------//
 
 	public void menuCliente(int idUsuario) {
-		cargarProductosDesdeBD(); // <<--- Cargar productos desde la base de datos
+		cargarProductosDesdeBD(); // Cargar productos desde la base de datos
 
 		String[] menu = { "Comprar" };
 		int opc;
@@ -298,8 +298,8 @@ public class gestorproducto {
 					menu[0]);
 
 			switch (opc) {
-			case 0: // Comprar
-				cargarProductosDesdeBD(); // Actualiza lista desde la base
+			case 0: // Compra
+				cargarProductosDesdeBD();
 
 				if (listaProductos.isEmpty()) {
 					JOptionPane.showMessageDialog(null, "No hay productos disponibles.");
@@ -353,15 +353,14 @@ public class gestorproducto {
 							double subtotal = prodSeleccionado.getPrecio() * cantidad;
 							totalCompra += subtotal;
 
-							// Actualiza stock
+							// Actualiza stock cuando se genera una compra
 							int nuevoStock = prodSeleccionado.getCantidad() - cantidad;
 							prodSeleccionado.setCantidad(nuevoStock);
 							actualizarStockEnBD(prodSeleccionado.getCodigo(), nuevoStock);
 
-							// Agrega a resumen
+							// Agrega a resumen de la compra total
 							resumenCompra.add(prodSeleccionado.getNombre() + " x" + cantidad + " = $" + subtotal);
 
-							// Preguntar si quiere seguir
 							int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea comprar otro producto?",
 									"Continuar", JOptionPane.YES_NO_OPTION);
 							seguirComprando = (respuesta == JOptionPane.YES_OPTION);
@@ -374,7 +373,7 @@ public class gestorproducto {
 
 				} while (seguirComprando);
 
-				// Mostrar resumen final
+				// Mostrar resumen final y carga la compra en la base de datos
 				if (!resumenCompra.isEmpty()) {
 					StringBuilder resumen = new StringBuilder("Resumen de compra:\n\n");
 					for (String item : resumenCompra) {
@@ -382,13 +381,13 @@ public class gestorproducto {
 					}
 					resumen.append("\nTotal a pagar: $").append(totalCompra);
 					JOptionPane.showMessageDialog(null, resumen.toString());
-					
-					registrarCompraEnBD(idUsuario, totalCompra);
-					
+
+					// Registrar compra 
+					registrarCompraEnBD(idUsuario , totalCompra);
+
 				} else {
 					JOptionPane.showMessageDialog(null, "No se realizaron compras.");
 				}
-				
 
 				break;
 
@@ -401,7 +400,7 @@ public class gestorproducto {
 	// Base de datos
 
 	public void cargarProductosDesdeBD() {
-		listaProductos.clear(); // Limpiar lista antes de volver a cargar
+		listaProductos.clear();
 
 		String query = "SELECT * FROM producto";
 
@@ -422,7 +421,7 @@ public class gestorproducto {
 		}
 	}
 
-	// Actualiza el stock del producto en la base de datos
+	// Actualiza el stock de los producto en la base de datos
 	public void actualizarStockEnBD(int codigoProducto, int nuevoStock) {
 		try {
 			PreparedStatement statement = (PreparedStatement) con
@@ -439,24 +438,21 @@ public class gestorproducto {
 			e.printStackTrace();
 		}
 	}
-	
-	
 
+	// Registra la compra en la base de datos
 	public static void registrarCompraEnBD(int idUsuario, double total) {
-	   
-	    try {
-	    	PreparedStatement statement = (PreparedStatement) con.prepareStatement(
-	    				"INSERT INTO `compras`(`idUsuario`,`total`, `fecha`) VALUES (?,?,?)");
 
-	        statement.setInt(1, idUsuario);
-	        statement.setDouble(2, total);
-	        statement.setDate(3, new java.sql.Date(System.currentTimeMillis())); // Fecha actual
-	        statement.executeUpdate();
+		try {
+			PreparedStatement statement = (PreparedStatement) con
+					.prepareStatement("INSERT INTO `compras`(`idUsuario`,`total`) VALUES (?,?)");
 
-	    } catch (SQLException e) {
-	        JOptionPane.showMessageDialog(null, "Error al registrar la compra: " + e.getMessage());
-	    } 
+			statement.setInt(1, idUsuario);
+			statement.setDouble(2, total);			
+			statement.executeUpdate();
+
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error al registrar la compra: " + e.getMessage());
+		}
 	}
 
-	}
-
+}

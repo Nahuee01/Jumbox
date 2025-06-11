@@ -1,7 +1,7 @@
 
 public class Usuario {
 
-	private int id;
+	private int idUsuario;
 	private String nombre;
 	private String mail;
 	private String contrasena;
@@ -15,12 +15,12 @@ public class Usuario {
 		this.rol = rol;
 	}
 
-	public int getId() {
-		return id;
+	public int getIdUsuario() {
+		return idUsuario;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setIdUsuario(int id) {
+		this.idUsuario = id;
 	}
 
 	public String getNombre() {
