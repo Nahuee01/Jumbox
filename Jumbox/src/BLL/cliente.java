@@ -1,3 +1,5 @@
+package BLL;
+import DLL.gestorproducto;
 
 public class cliente extends Usuario {
 

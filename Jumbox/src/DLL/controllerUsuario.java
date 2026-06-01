@@ -1,10 +1,14 @@
+package DLL;
 import java.sql.ResultSet;
+import repository.hashing;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+
+import BLL.Usuario;
 
 public class controllerUsuario {
 	private static Connection con = conexion.getInstance().getConection();

@@ -1,4 +1,7 @@
+package BLL;
 import javax.swing.JOptionPane;
+
+import DLL.gestorproducto;
 
 public class empleado extends Usuario {
 

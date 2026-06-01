@@ -1,7 +1,18 @@
+package GUI;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+
+import BLL.Usuario;
+import BLL.admin;
+import BLL.cliente;
+import BLL.empleado;
+import BLL.gerente;
+import DLL.conexion;
+import DLL.controllerUsuario;
+import repository.hashing;
+
 import java.sql.ResultSet;
 import java.time.LocalDate;
 

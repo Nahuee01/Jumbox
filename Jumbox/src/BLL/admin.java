@@ -1,4 +1,7 @@
-public class admin extends Usuario {
+package BLL;
+import DLL.gestorproducto;
+
+public class admin extends Usuario  {
 
 	private int numlegajo;
 

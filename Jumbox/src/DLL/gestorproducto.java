@@ -1,3 +1,4 @@
+package DLL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +11,9 @@ import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import BLL.producto;
+
+import BLL.Usuario;
 
 public class gestorproducto {
 	private static Connection con = conexion.getInstance().getConection();
@@ -171,7 +175,12 @@ public class gestorproducto {
 			case 0:
 				int codigoProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto"));
 				producto resultado = BuscarProducto(codigoProducto);
-				JOptionPane.showMessageDialog(null, resultado);
+				JOptionPane.showMessageDialog(null,
+						"Categoría: " + resultado.getCategoria() + "\n" + "Nombre: " + resultado.getNombre() + "\n"
+								+ "Marca: " + resultado.getMarca() + "\n" + "Precio: $" + resultado.getPrecio() + "\n"
+								+ "Código: " + resultado.getCodigo() + "\n" + "Peso: " + resultado.getPeso() + " kg\n"
+								+ "Vencimiento: " + resultado.getVencimiento() + "\n" + "Cantidad: "
+								+ resultado.getCantidad() + " unidades");;
 				break;
 
 			default:
