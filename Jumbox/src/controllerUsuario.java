@@ -13,36 +13,44 @@ public class controllerUsuario {
 	// -------- Agregar de Usuarios----------//
 
 	public static void agregarUsuario(Usuario usuario) {
-		try {
-			// Verificar si el mail ya existe
-			PreparedStatement checkStmt = (PreparedStatement) con
-					.prepareStatement("SELECT * FROM usuario WHERE mail = ?");
-			checkStmt.setString(1, usuario.getMail());
-			ResultSet resultSet = checkStmt.executeQuery();
+	    try {
+	        // Verificar si el mail ya existe
+	        PreparedStatement checkStmt = (PreparedStatement) con
+	                .prepareStatement("SELECT * FROM usuario WHERE mail = ?");
+	        checkStmt.setString(1, usuario.getMail());
+	        ResultSet resultSet = checkStmt.executeQuery();
 
-			if (resultSet.next()) {
-				JOptionPane.showMessageDialog(null, "El usuario con ese mail ya existe.");
-				return;
-			}
+	        if (resultSet.next()) {
+	            JOptionPane.showMessageDialog(null, "El usuario con ese mail ya existe.");
+	            return;
+	        }
 
-			// Insertar nuevo usuario
-			PreparedStatement insertStmt = (PreparedStatement) con
-					.prepareStatement("INSERT INTO usuario(nombre, mail, contrasena, rol) VALUES (?, ?, ?, ?)");
-			insertStmt.setString(1, usuario.getNombre());
-			insertStmt.setString(2, usuario.getMail());
-			insertStmt.setString(3, usuario.getContrasena());
-			insertStmt.setString(4, usuario.getRol());
+	        // Insertar nuevo usuario
+	        PreparedStatement insertStmt = (PreparedStatement) con
+	                .prepareStatement("INSERT INTO usuario(nombre, mail, contrasena, rol) VALUES (?, ?, ?, ?)");
+	        insertStmt.setString(1, usuario.getNombre());
+	        insertStmt.setString(2, usuario.getMail());
+	        
+	        // ---------------- CAMBIO AQUÍ ----------------
+	        // Hashear la contraseña antes de mandarla al PreparedStatement
+	        String contrasenaHasheada = hashing.hash(usuario.getContrasena());
+	        insertStmt.setString(3, contrasenaHasheada);
+	        // ---------------------------------------------
+	        
+	        insertStmt.setString(4, usuario.getRol());
 
-			int filas = insertStmt.executeUpdate();
-			if (filas > 0) {
-				usuarios.add(usuario);
-				JOptionPane.showMessageDialog(null, "Usuario agregado correctamente.");
-			}
+	        int filas = insertStmt.executeUpdate();
+	        if (filas > 0) {
+	            // Opcional: Actualizar el objeto usuario con el hash antes de agregarlo a la lista en memoria
+	            usuario.setContrasena(contrasenaHasheada); 
+	            usuarios.add(usuario);
+	            JOptionPane.showMessageDialog(null, "Usuario agregado correctamente.");
+	        }
 
-		} catch (Exception e) {
-			System.out.println("Error al agregar usuario: " + e.getMessage());
-			e.printStackTrace();
-		}
+	    } catch (Exception e) {
+	        System.out.println("Error al agregar usuario: " + e.getMessage());
+	        e.printStackTrace();
+	    }
 	}
 
 	public static ArrayList<Usuario> MostrarUsuarios() {
@@ -103,33 +111,42 @@ public class controllerUsuario {
 		}
 	}
 
+
 	// -------- Actualizar Usuarios----------//
-	public static void ActualizarUsuario(Usuario usuario) {
-		try {
-			PreparedStatement statement = (PreparedStatement) con.prepareStatement(
-					"UPDATE usuario SET nombre = ?, mail = ?, contrasena = ?, rol = ? WHERE idusuario = ?");
-			statement.setString(1, usuario.getNombre());
-			statement.setString(2, usuario.getMail());
-			statement.setString(3, usuario.getContrasena());
-			statement.setString(4, usuario.getRol());
-			statement.setInt(5, usuario.getIdUsuario());
+		public static void ActualizarUsuario(Usuario usuario) {
+			try {
+				PreparedStatement statement = (PreparedStatement) con.prepareStatement(
+						"UPDATE usuario SET nombre = ?, mail = ?, contrasena = ?, rol = ? WHERE idusuario = ?");
+				statement.setString(1, usuario.getNombre());
+				statement.setString(2, usuario.getMail());
+				
+				// ---------------- CAMBIO AQUÍ ----------------
+				// Hashear la contraseña antes de actualizarla en la BD
+				String contrasenaHasheada = hashing.hash(usuario.getContrasena());
+				statement.setString(3, contrasenaHasheada);
+				// ---------------------------------------------
+				
+				statement.setString(4, usuario.getRol());
+				statement.setInt(5, usuario.getIdUsuario());
 
-			int fila = statement.executeUpdate();
-			if (fila > 0) {
-				for (int i = 0; i < usuarios.size(); i++) {
-					if (usuarios.get(i).getIdUsuario() == usuario.getIdUsuario()) {
-						usuarios.set(i, usuario);
-						break;
+				int fila = statement.executeUpdate();
+				if (fila > 0) {
+					// Actualizamos el objeto con la contraseña hasheada antes de meterlo a la lista
+					usuario.setContrasena(contrasenaHasheada);
+					
+					for (int i = 0; i < usuarios.size(); i++) {
+						if (usuarios.get(i).getIdUsuario() == usuario.getIdUsuario()) {
+							usuarios.set(i, usuario);
+							break;
+						}
 					}
+					JOptionPane.showMessageDialog(null, "Usuario actualizado correctamente.");
+				} else {
+					JOptionPane.showMessageDialog(null, "No se encontró el usuario para actualizar.");
 				}
-				JOptionPane.showMessageDialog(null, "Usuario actualizado correctamente.");
-			} else {
-				JOptionPane.showMessageDialog(null, "No se encontró el usuario para actualizar.");
-			}
 
-		} catch (Exception e) {
-			System.out.println("Error al actualizar: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
-}
+			} catch (Exception e) {
+				System.out.println("Error al actualizar: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}}

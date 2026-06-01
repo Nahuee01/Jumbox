@@ -105,7 +105,7 @@ public class gestorproducto {
 	// -------------------Menu Admin-------------------//
 
 	public void menuAdmin() {
-		String[] menu = { "Agregar Usuario", "Buscar Usuario", "Eliminar Usuario", "Actualizar Usuario" };
+		String[] menu = {"Agregar Usuario", "Buscar Usuario", "Eliminar Usuario", "Actualizar Usuario"};
 		int opc;
 
 		do {

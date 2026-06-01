@@ -7,5 +7,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/nahue/OneDrive/Escritorio/mysql-connector-java-5.1.13.jar"/>
+	<classpathentry kind="lib" path="C:/Users/nahue/Downloads/jbcrypt-0.4.jar"/>
 	<classpathentry kind="output" path="Jumbox/bin"/>
 </classpath>

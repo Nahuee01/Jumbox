@@ -3,9 +3,9 @@ public class cliente extends Usuario {
 
 	
 
-	public cliente(int idUsuario, String nombre, String mail, String contrasena, String rol, int dni) {
+	public cliente(String nombre, String mail, String contrasena, String rol, int dni) {
 		super(nombre, mail, contrasena, rol);
-		this.setIdUsuario(idUsuario);
+		
 
 	}
 
