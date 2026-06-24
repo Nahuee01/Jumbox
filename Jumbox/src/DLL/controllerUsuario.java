@@ -123,19 +123,16 @@ public class controllerUsuario {
 						"UPDATE usuario SET nombre = ?, mail = ?, contrasena = ?, rol = ? WHERE idusuario = ?");
 				statement.setString(1, usuario.getNombre());
 				statement.setString(2, usuario.getMail());
-				
-				// ---------------- CAMBIO AQUÍ ----------------
+						
 				// Hashear la contraseña antes de actualizarla en la BD
 				String contrasenaHasheada = hashing.hash(usuario.getContrasena());
 				statement.setString(3, contrasenaHasheada);
-				// ---------------------------------------------
 				
 				statement.setString(4, usuario.getRol());
 				statement.setInt(5, usuario.getIdUsuario());
 
 				int fila = statement.executeUpdate();
 				if (fila > 0) {
-					// Actualizamos el objeto con la contraseña hasheada antes de meterlo a la lista
 					usuario.setContrasena(contrasenaHasheada);
 					
 					for (int i = 0; i < usuarios.size(); i++) {

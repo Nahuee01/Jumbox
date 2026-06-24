@@ -22,7 +22,7 @@ public class main {
     public static void main(String[] args) {
         String[] opciones = {"Login", "Registrarse", "Salir"};
 
-        // Un bucle para que el menú vuelva a aparecer si se equivocan o si se registran
+
         while (true) {
             int seleccion = JOptionPane.showOptionDialog(null, 
                     "Bienvenido. ¿Qué deseas hacer?", 
@@ -36,7 +36,7 @@ public class main {
             if (seleccion == 0) {
                 // ------------------ LOGIN ------------------
                 String mail = JOptionPane.showInputDialog("Ingresa mail:");
-                if (mail == null) continue; // Vuelve al menú si el usuario cancela
+                if (mail == null) continue; 
                 
                 String contrasena = JOptionPane.showInputDialog("Ingresa contraseña:");
                 if (contrasena == null) continue;
@@ -47,8 +47,7 @@ public class main {
                     JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.");
                 } else {
                     JOptionPane.showMessageDialog(null, "¡Bienvenido " + usuarioLogueado.getNombre() + "!");
-
-                    // Lógica de redirección según el rol
+          
                     if (usuarioLogueado.getRol().equalsIgnoreCase("gerente")) {
                         System.out.println("Es un gerente");
                         gerente nuevo = new gerente(usuarioLogueado.getNombre(), usuarioLogueado.getMail(), usuarioLogueado.getContrasena(), usuarioLogueado.getRol(), 0);
@@ -63,14 +62,14 @@ public class main {
                         nuevo.menu();
                     } else {
                         System.out.println("Es un cliente");
-                        cliente nuevo = new cliente(usuarioLogueado.getNombre(), usuarioLogueado.getMail(), usuarioLogueado.getContrasena(), usuarioLogueado.getRol(), 0);
+                        cliente nuevo = new cliente(usuarioLogueado.getNombre(), usuarioLogueado.getMail(), usuarioLogueado.getContrasena(), usuarioLogueado.getRol(), usuarioLogueado.getIdUsuario());;
                         nuevo.menu();
                     }
-                    break; // Salimos del bucle principal porque ya inició sesión correctamente
+                    break; 
                 }
 
             } else if (seleccion == 1) {
-                // ------------------ REGISTRO ------------------
+        
                 String nombre = JOptionPane.showInputDialog("Ingresa tu nombre:");
                 if (nombre == null || nombre.trim().isEmpty()) continue;
                 
@@ -80,7 +79,6 @@ public class main {
                 String contrasena = JOptionPane.showInputDialog("Ingresa tu contraseña:");
                 if (contrasena == null || contrasena.trim().isEmpty()) continue;
                 
-                // Pedimos el rol (podrías forzar a que todos los nuevos sean 'cliente' por defecto si lo prefieres)
                 String[] roles = {"cliente", "empleado", "gerente", "admin"};
                 String rol = (String) JOptionPane.showInputDialog(null, 
                         "Selecciona tu rol:", 
@@ -91,47 +89,43 @@ public class main {
                         roles[0]);
                 if (rol == null) continue;
 
-                // Creamos el objeto y usamos tu controlador que ya tiene el hash y el INSERT a la base de datos
                 Usuario nuevoUsuario = new Usuario(nombre, mail, contrasena, rol);
                 controllerUsuario.agregarUsuario(nuevoUsuario);
                 
-                // Al terminar, el bucle while vuelve a mostrar el menú para que ahora sí puedan hacer Login
                 
             } else {
-                // ------------------ SALIR ------------------
-                // Si eligen "Salir" o cierran la ventana de la X
+
                 System.out.println("Saliendo del sistema...");
                 System.exit(0); 
             }
         }
     }
 
-    // Tu método Login original corregido
+
     public static Usuario Login(String mail, String contrasena) {
         Usuario usuario = null;
         try {
-            // 1. Buscamos SOLO por el mail
+            
             PreparedStatement statement = (PreparedStatement) con
                     .prepareStatement("SELECT * FROM `usuario` WHERE `mail` = ?");
             statement.setString(1, mail);
             
             ResultSet resultSet = statement.executeQuery();
             
-            // 2. Verificamos si existe un usuario con ese mail
+
             if (resultSet.next()) {
                 String hashBD = resultSet.getString("contrasena");
                 
-                // 3. Comparamos la contraseña ingresada con el hash de la base de datos
                 if (hashing.verificar(contrasena, hashBD)) {
                     System.out.println("Rol recuperado: " + resultSet.getString("rol"));
                     
-                    // 4. Si coinciden, instanciamos el usuario
                     usuario = new Usuario(
                             resultSet.getString("nombre"), 
                             resultSet.getString("mail"),
-                            hashBD, // Guardamos el hash en el objeto por seguridad
+                            hashBD,
                             resultSet.getString("rol")
                     );
+                    usuario.setIdUsuario(resultSet.getInt("idusuario"));
                 } else {
                     System.out.println("Error: Contraseña incorrecta para el usuario " + mail);
                 }
